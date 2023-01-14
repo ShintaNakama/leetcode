@@ -64,17 +64,42 @@ type ListNode struct {
 // hasCycle LinkedList(連結リスト)でサイクルがあるかどうか判断する.
 // アルゴリズムとしてはheadとnextの値を確認し同じでなければ、
 // nextとnextのnextの値を確認していくというような感じで1つ先のnodeと2つ先のnodeを確認していく
+
+// 自力解答
 func hasCycle(head *ListNode) bool {
 	if head == nil || head.Next == nil {
 		return false
 	}
+
 	slow := head
 	fast := head.Next
 
-	for fast.Next != nil && fast.Next.Next != nil && fast != slow {
+	for slow != nil && fast != nil && fast.Next != nil {
+		if slow == fast {
+			return true
+		}
 		slow = slow.Next
 		fast = fast.Next.Next
+		//fmt.Println("slow=", slow)
+		//fmt.Println("fast=", fast)
 	}
 
-	return slow == fast
+	return false
 }
+
+// もっと簡潔なパターン
+//func hasCycle(head *ListNode) bool {
+//	if head == nil || head.Next == nil {
+//		return false
+//	}
+//
+//	slow := head
+//	fast := head.Next
+//
+//	for slow != nil && fast != nil && slow != fast {
+//		slow = fast
+//		fast = fast.Next.Next
+//	}
+//
+//	return true
+//}

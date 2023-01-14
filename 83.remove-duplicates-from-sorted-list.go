@@ -39,15 +39,17 @@ package main
  * }
  */
 
-// https://leetcode.com/problems/remove-duplicates-from-sorted-list/solutions/1356619/go-simple-solution-with-recursion-0-ms/?orderBy=most_votes&languageTags=golang
+// 自力解答
 func deleteDuplicates(head *ListNode) *ListNode {
 	if head == nil || head.Next == nil {
 		return head
-	} else if head.Val == head.Next.Val {
+	}
+
+	if head.Val == head.Next.Val {
 		head = deleteDuplicates(head.Next)
-		return head
 	} else {
 		head.Next = deleteDuplicates(head.Next)
-		return head
 	}
+
+	return head
 }

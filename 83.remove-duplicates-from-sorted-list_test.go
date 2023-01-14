@@ -1,8 +1,9 @@
 package main
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_deleteDuplicates(t *testing.T) {
@@ -14,11 +15,67 @@ func Test_deleteDuplicates(t *testing.T) {
 		args args
 		want *ListNode
 	}{
-		// TODO: Add test cases.
+		{
+			name: "no1",
+			args: args{
+				head: &ListNode{
+					Val: 1,
+					Next: &ListNode{
+						Val: 1,
+						Next: &ListNode{
+							Val:  2,
+							Next: nil,
+						},
+					},
+				},
+			},
+			want: &ListNode{
+				Val: 1,
+				Next: &ListNode{
+					Val:  2,
+					Next: nil,
+				},
+			},
+		},
+		{
+			name: "no2",
+			args: args{
+				head: &ListNode{
+					Val: 1,
+					Next: &ListNode{
+						Val: 1,
+						Next: &ListNode{
+							Val: 2,
+							Next: &ListNode{
+								Val: 3,
+								Next: &ListNode{
+									Val:  3,
+									Next: nil,
+								},
+							},
+						},
+					},
+				},
+			},
+			want: &ListNode{
+				Val: 1,
+				Next: &ListNode{
+					Val: 2,
+					Next: &ListNode{
+						Val:  3,
+						Next: nil,
+					},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
-		if got := deleteDuplicates(tt.args.head); !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("%q. deleteDuplicates() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got := deleteDuplicates(tt.args.head)
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("%q. deleteDuplicates() = %v, want %v\ndiff = %v", tt.name, got, tt.want, diff)
+			}
+
+		})
 	}
 }

@@ -57,40 +57,50 @@ package main
  * }
  */
 
-//https://leetcode.com/problems/linked-list-cycle-ii/solutions/1488939/golang-solution-beats-96-time-complexity-and-100-space-complexity/?orderBy=most_votes&languageTags=golang
+// 自力解答
 func detectCycle(head *ListNode) *ListNode {
-	is_cycle, fast := hasCycle2(head)
-	if is_cycle == true {
-		for head != fast {
-			head = head.Next
-			fast = fast.Next
-		}
-		return head
+	if head == nil || head.Next == nil {
+		return nil
 	}
+
+	m := map[*ListNode]struct{}{}
+
+	node := head
+	for node != nil {
+		if _, ok := m[node]; ok {
+			return node
+		} else {
+			m[node] = struct{}{}
+		}
+		node = node.Next
+	}
+
 	return nil
 }
 
-func hasCycle2(head *ListNode) (bool, *ListNode) {
-	slow := head
-	fast := head
-	for fast != nil && fast.Next != nil {
-		slow = slow.Next
-		fast = fast.Next.Next
-		if slow == fast {
-			return true, slow
-		}
-	}
-	return false, slow
-}
-
-// https://leetcode.com/problems/linked-list-cycle-ii/solutions/1696193/golang-my-weird-solution/?orderBy=most_votes&languageTags=golang
+// https://leetcode.com/problems/linked-list-cycle-ii/solutions/1488939/golang-solution-beats-96-time-complexity-and-100-space-complexity/?orderBy=most_votes&languageTags=golang
+// この解答は参考になる
 //func detectCycle(head *ListNode) *ListNode {
-//	for head != nil {
-//		if uintptr(unsafe.Pointer(head.Next)) > uintptr(unsafe.Pointer(head)) {
-//			head = head.Next
-//		} else {
-//			return head.Next
-//		}
-//	}
-//	return head
+//    is_cycle, fast := hasCycle(head)
+//    if is_cycle == true {
+//        for head != fast {
+//            head = head.Next
+//            fast = fast.Next
+//        }
+//        return head
+//    }
+//    return nil
+//}
+//
+//func hasCycle(head *ListNode) (bool, *ListNode) {
+//    slow := head
+//    fast := head
+//    for fast != nil && fast.Next != nil {
+//        slow = slow.Next
+//        fast = fast.Next.Next
+//        if slow == fast {
+//            return true, slow
+//        }
+//    }
+//    return false, slow
 //}
