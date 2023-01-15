@@ -1,9 +1,5 @@
 package main
 
-import (
-	"strings"
-)
-
 /**
  * <p>Given a string <code>s</code> containing just the characters <code>&#39;(&#39;</code>, <code>&#39;)&#39;</code>, <code>&#39;{&#39;</code>, <code>&#39;}&#39;</code>, <code>&#39;[&#39;</code> and <code>&#39;]&#39;</code>, determine if the input string is valid.</p>
 
@@ -50,78 +46,46 @@ import (
  * "()"
 **/
 
-// 自分の回答
+// 自分の解答
 func isValid(s string) bool {
-	ss := strings.Split(s, "")
+	// lenが2未満は即false
+	if len(s) < 2 {
+		return false
+	}
 
-	cc := make([]string, 0, 10)
+	// mapで対応表を作成
+	m := map[rune]rune{
+		40:  41,  // (:)
+		91:  93,  // [:]
+		123: 125, // {:}
+	}
 
-	for i, c := range ss {
-		if i == 0 {
-			cc = append(cc, c)
-			continue
-		}
-
+	// strsでカッコを開く側のlistを定義. LIFO(Last-In First-Out: 最初に入れたものを最後に出す)
+	strs := make([]rune, 0, 10000)
+	for _, c := range s {
 		switch c {
-		case ")":
-			if len(cc) != 0 && cc[len(cc)-1] == "(" {
-				cc = cc[0 : len(cc)-1]
-				continue
-			} else {
+		// カッコ開く側はリストappend
+		case 40, 91, 123:
+			strs = append(strs, c)
+		default:
+			// カッコ閉じる側
+			// この時点でカッコ開く側がlistになければfalse
+			if len(strs) == 0 {
 				return false
 			}
-		case "}":
-			if len(cc) != 0 && cc[len(cc)-1] == "{" {
-				cc = cc[0 : len(cc)-1]
-				continue
-			} else {
+			// listの最後の要素と対になる閉じカッコでなければfalse
+			if m[strs[len(strs)-1]] != c {
 				return false
 			}
-		case "]":
-			if len(cc) != 0 && cc[len(cc)-1] == "[" {
-				cc = cc[0 : len(cc)-1]
-				continue
-			} else {
-				return false
-			}
-		case "(":
-			cc = append(cc, c)
-		case "{":
-			cc = append(cc, c)
-		case "[":
-			cc = append(cc, c)
+			// listの最後の要素は使用されたので削除
+			strs = strs[0 : len(strs)-1]
 		}
 	}
 
-	return len(cc) == 0
-}
+	// 最終的にlistのlenが0になればtrue
+	if len(strs) == 0 {
+		return true
+	}
 
-// https://leetcode.com/problems/valid-parentheses/solutions/272483/golang-solution-0ms-2mb-100/?orderBy=most_votes&languageTags=golang
-//func isValid(s string) bool {
-//    if s == "" {
-//        return true
-//    }
-//
-//    tr := map[rune]rune{
-//        '}': '{',
-//        ')': '(',
-//        ']': '[',
-//    }
-//
-//    stack := make([]rune, 0, 1)
-//
-//    for _, ch := range s {
-//        switch ch {
-//        case 40,123,91:
-//            stack = append(stack, ch)
-//        case 41,125,93:
-//            if len(stack) == 0 || stack[len(stack)-1] != tr[ch] {
-//                return false
-//            } else {
-//                stack = stack[:len(stack)-1]
-//            }
-//        }
-//    }
-//
-//    return len(stack) == 0
-//}
+	return false
+}

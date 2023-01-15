@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+)
 
 func Test_isValid(t *testing.T) {
 	type args struct {
@@ -74,10 +78,27 @@ func Test_isValid(t *testing.T) {
 			},
 			want: false,
 		},
+		{
+			name: "10",
+			args: args{
+				s: "[",
+			},
+			want: false,
+		},
+		{
+			name: "11",
+			args: args{
+				s: "((",
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
-		if got := isValid(tt.args.s); got != tt.want {
-			t.Errorf("%q. isValid() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got := isValid(tt.args.s)
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("%q. isValid() = %v, want %v\n diff = %v", tt.name, got, tt.want, diff)
+			}
+		})
 	}
 }
