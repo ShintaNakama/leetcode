@@ -47,20 +47,25 @@ package main
  *     Next *ListNode
  * }
  */
+
+// 自力解答
+//func reverseList(head *ListNode) *ListNode {
+//	var prev *ListNode
+//	next := head
+//	for next != nil {
+//		n := next.Next
+//		next.Next = prev
+//		prev = next
+//		next = n
+//	}
+//	return prev
+//}
+
 func reverseList(head *ListNode) *ListNode {
 	var prev *ListNode
 	for head != nil {
-		//fmt.Println("prev", prev)
-		//fmt.Println("head", head)
-		//if head != nil {
-		//	fmt.Println("head.Next", head.Next)
-		//}
 		head.Next, prev, head = prev, head, head.Next
-		//fmt.Println("prev", prev)
-		//fmt.Println("head", head)
-		//if head != nil {
-		//	fmt.Println("head.Next", head.Next)
-		//}
 	}
+
 	return prev
 }
