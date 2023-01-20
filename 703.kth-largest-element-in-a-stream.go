@@ -51,6 +51,7 @@ kthLargest.add(4);   // return 8
 [[3,[4,5,8,2]],[3],[5],[10],[9],[4]]
 **/
 
+// https://pkg.go.dev/container/heap
 // An IntHeap is a min-heap of ints.
 type IntHeap []int
 
@@ -73,45 +74,52 @@ func (h *IntHeap) Pop() any {
 }
 
 type KthLargest struct {
-	k int
-	h *IntHeap
+	K    int
+	Nums *IntHeap
 }
 
 func Constructor(k int, nums []int) KthLargest {
-	var ins KthLargest
-	// ストリームで受け取るintのうちk番目の値を返すので、常にk番目の値をheapの先頭保持していれば、heapのlenはkでも良い
-	// heapを使っているのでIntHeapの先頭が最小値となる
-	// そのためelseではnumsのlenがkになるように変更している
-	if len(nums) <= k {
-		ins = KthLargest{
-			k: k,
-			h: (*IntHeap)(&nums),
-		}
-		heap.Init(ins.h)
-	} else {
-		kNums := nums[:k]
-		ins = KthLargest{
-			k: k,
-			h: (*IntHeap)(&kNums),
-		}
-		heap.Init(ins.h)
-		for i := k; i < len(nums); i++ {
-			ins.Add(nums[i])
-		}
+	res := KthLargest{
+		K:    k,
+		Nums: &IntHeap{},
 	}
-	return ins
+
+	heap.Init(res.Nums)
+
+	for _, n := range nums {
+		heap.Push(res.Nums, n)
+	}
+	//fmt.Println(res.Nums)
+
+	for k < res.Nums.Len() {
+		_ = heap.Pop(res.Nums)
+	}
+	//fmt.Println(res.Nums)
+
+	return res
 }
 
 func (this *KthLargest) Add(val int) int {
-	// heapの先頭(最小値)よりも大きい値が引数に設定された場合、先頭を引数で入れ替えることで最小値(k番目の値)が更新される
-	if this.h.Len() < this.k {
-		heap.Push(this.h, val)
-	} else if val > (*this.h)[0] {
-		(*this.h)[0] = val
-		heap.Fix(this.h, 0)
+	if this.Nums.Len() == 0 {
+		heap.Push(this.Nums, val)
+		return (*this.Nums)[0]
 	}
 
-	return (*this.h)[0]
+	if this.Nums.Len() < this.K {
+		heap.Push(this.Nums, val)
+		return (*this.Nums)[0]
+	}
+
+	if val < (*this.Nums)[0] {
+		return (*this.Nums)[0]
+	}
+
+	heap.Push(this.Nums, val)
+	// heap.Popは heapの最小の要素を削除する
+	// つまりheap.Pushのあとにheap.Popを行うと最小の要素が変更される
+	_ = heap.Pop(this.Nums)
+	//fmt.Println(this.Nums)
+	return (*this.Nums)[0]
 }
 
 /**
