@@ -47,42 +47,18 @@ package main
  * [2,7,11,15]
 9
 **/
-//func twoSum(nums []int, target int) []int {
-//	m := make(map[int]int, len(nums))
-//	for i, n := range nums {
-//		m[i] = n
-//	}
-//
-//	var res []int
-//	for k, v := range m {
-//		if len(res) > 1 {
-//			break
-//		}
-//		sub := target - v
-//		for k2, v2 := range m {
-//			if k == k2 {
-//				continue
-//			}
-//			if v2 == sub {
-//				res = []int{k, k2}
-//				break
-//			}
-//		}
-//	}
-//
-//	return res
-//}
 func twoSum(nums []int, target int) []int {
 	m := make(map[int]int, len(nums))
-	for i, n := range nums {
-		sub := target - n
-		v, ok := m[sub]
-		if ok {
+
+	for i, num := range nums {
+		sub := target - num
+		if v, ok := m[sub]; ok {
 			return []int{v, i}
 		}
 
-		m[n] = i
+		if _, ok := m[num]; !ok {
+			m[num] = i
+		}
 	}
-
-	return []int{}
+	return nil
 }

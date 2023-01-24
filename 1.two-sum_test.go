@@ -1,8 +1,9 @@
 package main
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 func Test_twoSum(t *testing.T) {
@@ -58,8 +59,11 @@ func Test_twoSum(t *testing.T) {
 	}
 	for _, tt := range tests {
 		tt := tt
-		if got := twoSum(tt.args.nums, tt.args.target); !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("%q. twoSum() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got := twoSum(tt.args.nums, tt.args.target)
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("%q. twoSum() = %v, want %v\n diff = %v", tt.name, got, tt.want, diff)
+			}
+		})
 	}
 }
