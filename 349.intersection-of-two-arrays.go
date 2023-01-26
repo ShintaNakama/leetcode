@@ -33,56 +33,46 @@ package main
 [2,2]
 **/
 func intersection(nums1 []int, nums2 []int) []int {
-	longestLen := len(nums1)
+	longNums := nums1
+	shortNums := nums2
 	if len(nums1) < len(nums2) {
-		longestLen = len(nums2)
+		longNums = nums2
+		shortNums = nums1
 	}
 
-	m := make(map[int]bool, len(nums1))
-
-	for _, n := range nums1 {
-		m[n] = true
+	m := make(map[int]struct{}, len(longNums))
+	for _, n := range longNums {
+		m[n] = struct{}{}
 	}
 
-	res := make([]int, 0, longestLen)
-	for _, n := range nums2 {
-		v, ok := m[n]
-		if ok && v {
-			res = append(res, n)
-			//delete(m, n)
-			m[n] = false
+	m2 := make(map[int]struct{}, len(shortNums))
+	for _, n := range shortNums {
+		if _, ok := m[n]; ok {
+			m2[n] = struct{}{}
 		}
+	}
+
+	res := make([]int, 0, len(m2))
+	for k := range m2 {
+		res = append(res, k)
 	}
 
 	return res
 }
 
-// 最初の回答.acceptした
-//func intersection(nums1 []int, nums2 []int) []int {
-//	longestLen := len(nums1)
-//	if len(nums1) < len(nums2) {
-//		longestLen = len(nums2)
-//	}
-//
-//	m := make(map[int]struct{}, len(nums1))
-//
-//	for _, n := range nums1 {
-//		m[n] = struct{}{}
-//	}
-//
-//	resM := make(map[int]struct{}, longestLen)
-//
-//	for _, n := range nums2 {
-//		_, ok := m[n]
-//		if ok {
-//			resM[n] = struct{}{}
-//		}
-//	}
-//
-//	res := make([]int, 0, longestLen)
-//	for k := range resM {
-//		res = append(res, k)
-//	}
-//
-//	return res
-//}
+// もう少し効率の良いやり方がある
+// https://leetcode.com/problems/intersection-of-two-arrays/solutions/405483/go-solution/?orderBy=most_votes&languageTags=golang
+// func intersection(nums1 []int, nums2 []int) []int {
+//     var count = map[int]bool{}
+//     var result = []int{}
+//     for _,num := range nums1{
+//         count[num]=true
+//     }
+//     for _, num := range nums2{
+//         if(count[num]==true){
+//             result=append(result,num)
+//             count[num]=false
+//         }
+//     }
+//     return result
+// }

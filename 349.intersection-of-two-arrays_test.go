@@ -1,8 +1,10 @@
 package main
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
 func Test_intersection(t *testing.T) {
@@ -33,8 +35,15 @@ func Test_intersection(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		if got := intersection(tt.args.nums1, tt.args.nums2); !reflect.DeepEqual(got, tt.want) {
-			t.Errorf("%q. intersection() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got := intersection(tt.args.nums1, tt.args.nums2)
+
+			opt := cmpopts.SortSlices(func(i, j int) bool {
+				return i < j
+			})
+			if diff := cmp.Diff(got, tt.want, opt); diff != "" {
+				t.Errorf("%q. intersection() = %v, want %v,\ndiff = %v", tt.name, got, tt.want, diff)
+			}
+		})
 	}
 }
