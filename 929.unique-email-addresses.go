@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -62,37 +63,26 @@ import (
 **/
 
 func numUniqueEmails(emails []string) int {
-	m := map[string]int{}
+	m := map[string]struct{}{}
 
 	for _, email := range emails {
-		e := strings.Split(email, "@")
-		if len(e) != 2 {
+		es := strings.Split(email, "@")
+		if len(es) != 2 {
 			continue
 		}
 
-		local := e[0]
-		domain := e[1]
-		//fmt.Println(local)
-		//fmt.Println(domain)
+		local, domain := es[0], es[1]
+		ss := strings.Split(local, "+")
+		local = strings.ReplaceAll(ss[0], ".", "")
 
-		if strings.Contains(local, "+") {
-			locals := strings.Split(local, "+")
-			//fmt.Println(locals[0])
-			local = locals[0]
+		e := strings.Join([]string{local, domain}, "@")
+
+		fmt.Println(e)
+
+		if _, ok := m[e]; !ok {
+			m[e] = struct{}{}
 		}
-
-		local = strings.Replace(local, ".", "", -1)
-		//fmt.Println(local)
-
-		reEmail := strings.Join([]string{local, domain}, "@")
-		//fmt.Println(reEmail)
-		m[reEmail]++
 	}
-
-	//var res int
-	//for _, v := range m {
-	//	res += v
-	//}
 
 	return len(m)
 }

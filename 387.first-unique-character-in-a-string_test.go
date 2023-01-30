@@ -18,10 +18,27 @@ func Test_firstUniqChar(t *testing.T) {
 			},
 			want: 0,
 		},
+		{
+			name: "no.2",
+			args: args{
+				s: "loveleetcode",
+			},
+			want: 2,
+		},
+		{
+			name: "no.3",
+			args: args{
+				s: "aabb",
+			},
+			want: -1,
+		},
 	}
 	for _, tt := range tests {
-		if got := firstUniqChar(tt.args.s); got != tt.want {
-			t.Errorf("%q. firstUniqChar() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			got := firstUniqChar(tt.args.s)
+			if got != tt.want {
+				t.Errorf("%q. firstUniqChar() = %v, want %v", tt.name, got, tt.want)
+			}
+		})
 	}
 }
