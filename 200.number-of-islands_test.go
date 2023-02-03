@@ -23,6 +23,18 @@ func Test_numIslands(t *testing.T) {
 			},
 			want: 1,
 		},
+		{
+			name: "no2",
+			args: args{
+				grid: [][]byte{
+					{49, 49, 48, 48, 48},
+					{49, 49, 48, 48, 48},
+					{48, 48, 49, 48, 48},
+					{48, 48, 48, 49, 49},
+				},
+			},
+			want: 3,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

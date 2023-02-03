@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 /**
  * <p>Given an <code>m x n</code> 2D binary grid <code>grid</code> which represents a map of <code>&#39;1&#39;</code>s (land) and <code>&#39;0&#39;</code>s (water), return <em>the number of islands</em>.</p>
 
@@ -50,58 +46,38 @@ import (
  */
 
 func numIslands(grid [][]byte) int {
-	fmt.Println(grid)
-	count := 0
+	//fmt.Println(grid)
+	var count int
 
-	for i := 0; i < len(grid); i++ {
-		for j := 0; j < len(grid[i]); j++ {
-			if grid[i][j] == '1' {
+	for i, m := range grid {
+		for j, n := range m {
+			// '1'(陸)であればこのマスを起点に探索開始
+			if n == 49 {
 				dfs(grid, i, j)
+				//fmt.Println(grid)
 				count++
-				// bfs(grid, i, j)
-				fmt.Println(grid)
 			}
 		}
 	}
-	fmt.Println(grid)
+	//fmt.Println(grid)
 
 	return count
 }
 
 // DFS(深さ優先探索)なのでgrid[i:len(grid)]を先に確認していく
-func dfs(grid [][]byte, r, c int) {
+func dfs(grid [][]byte, i, j int) {
+	//fmt.Println(i,j)
 	// gridの範囲外もしくは'1'でない場合はreturn
-	if r < 0 || r >= len(grid) || c < 0 || c >= len(grid[r]) || grid[r][c] != '1' {
+	if i < 0 || i > len(grid)-1 || j < 0 || j > len(grid[0])-1 || grid[i][j] != 49 {
 		return
 	}
 
+	// 確認したマスは'0'と'1'以外の値にする(今回は'2')
+	grid[i][j] = 50
+
 	// 再帰でgrid[i:len(grid)]を先に確認していく
-	grid[r][c] = '2'
-	dfs(grid, r+1, c)
-	dfs(grid, r-1, c)
-	dfs(grid, r, c+1)
-	dfs(grid, r, c-1)
-}
-
-func bfs(grid [][]byte, r, c int) {
-	q := [][2]int{}
-
-	q = append(q, [2]int{r, c})
-	grid[r][c] = '2'
-
-	offsets := [4][2]int{{-1, 0}, {1, 0}, {0, 1}, {0, -1}}
-	for len(q) > 0 {
-		curr := q[0]
-		q = q[1:]
-
-		for _, offset := range offsets {
-			x := curr[0] + offset[0]
-			y := curr[1] + offset[1]
-
-			if x >= 0 && x < len(grid) && y >= 0 && y < len(grid[x]) && grid[x][y] == '1' {
-				q = append(q, [2]int{x, y})
-				grid[x][y] = 2
-			}
-		}
-	}
+	dfs(grid, i+1, j)
+	dfs(grid, i-1, j)
+	dfs(grid, i, j+1)
+	dfs(grid, i, j-1)
 }
