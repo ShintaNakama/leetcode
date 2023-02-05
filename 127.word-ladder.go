@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 /**
  * <p>A <strong>transformation sequence</strong> from word <code>beginWord</code> to word <code>endWord</code> using a dictionary <code>wordList</code> is a sequence of words <code>beginWord -&gt; s<sub>1</sub> -&gt; s<sub>2</sub> -&gt; ... -&gt; s<sub>k</sub></code> such that:</p>
 
@@ -50,22 +48,22 @@ import "fmt"
 ["hot","dot","dog","lot","log","cog"]
 **/
 
-// https://leetcode.com/problems/word-ladder/solutions/3136332/go-bfs/?orderBy=most_votes&languageTags=golang
+// 参考:https://leetcode.com/problems/word-ladder/solutions/3136332/go-bfs/?orderBy=most_votes&languageTags=golang
 type W struct {
 	word string
 	step int
 }
 
 func ladderLength(beginWord string, endWord string, wordList []string) int {
-	wordMap := make(map[string]bool)
+	// wordListで探索済みかどうかを記録するmapを生成
+	// 値はfalseとし探索したらtrueにする
+	m := map[string]bool{}
+
 	for _, word := range wordList {
-		wordMap[word] = false
+		m[word] = false
 	}
 
-	if _, ok := wordMap[endWord]; !ok {
-		return 0
-	}
-
+	// queueを生成
 	q := []W{
 		{
 			word: beginWord,
@@ -75,36 +73,33 @@ func ladderLength(beginWord string, endWord string, wordList []string) int {
 
 	// BFS(幅優先探索)
 	// qに要素が存在する限りループ
-	index := 0
 	for len(q) > 0 {
-		fmt.Println(index)
 		// qから先頭の要素を取り出す
-		p := q[0]
+		w := q[0]
 		q = q[1:]
-		//fmt.Println(p)
-		//fmt.Println(q)
-		index++
 
 		// wordMapに存在しかつ探索済み(値がtrue)の場合continue
 		// つまりstepは進まない
-		if v, ok := wordMap[p.word]; ok && v {
-			//fmt.Println(p.word)
+		if v, ok := m[w.word]; ok && v {
 			continue
 		}
 
 		// 訪問したwordはtrueにする
-		wordMap[p.word] = true
+		m[w.word] = true
 
 		// endWordとqから取り出したwordが一致したらstepを返し終了
-		if p.word == endWord {
-			return p.step
+		if w.word == endWord {
+			return w.step
 		}
 
 		// wordListをループしマッチした文字列はappend
 		// この時qから取り出したwordの要素がもつstepに+1する
 		for _, word := range wordList {
-			if diffString(word, p.word) {
-				q = append(q, W{word, p.step + 1})
+			if diffStr(w.word, word) {
+				q = append(q, W{
+					word: word,
+					step: w.step + 1,
+				})
 			}
 		}
 	}
@@ -112,15 +107,16 @@ func ladderLength(beginWord string, endWord string, wordList []string) int {
 	return 0
 }
 
-func diffString(a, b string) bool {
-	d := 0
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			d += 1
+func diffStr(s1, s2 string) bool {
+	var diff int
+	for i := range s1 {
+		if s1[i] != s2[i] {
+			diff++
 		}
-		if d > 1 {
+		if diff > 1 {
 			return false
 		}
 	}
-	return d == 1
+
+	return diff == 1
 }
