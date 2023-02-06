@@ -2,7 +2,6 @@ package main
 
 import (
 	"container/list"
-	"fmt"
 )
 
 /**
@@ -45,57 +44,54 @@ import (
  *     Right *TreeNode
  * }
  */
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
 	Right *TreeNode
 }
 
-// https://leetcode.com/problems/maximum-depth-of-binary-tree/description/
 func maxDepth(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	return max(maxDepth(root.Left), maxDepth(root.Right)) + 1
-}
 
-func max(x int, y int) int {
-	fmt.Println(x, y)
-	if x > y {
-		return x
+	left := maxDepth(root.Left)
+	right := maxDepth(root.Right)
+
+	if left > right {
+		return left + 1
 	}
-	return y
+
+	return 1 + right
 }
 
-// 2. iterative solution
 func maxDepth2(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
 
-	queue := list.New()
-	queue.PushBack(root)
-	fmt.Println(queue.Front().Value)
-	level := 0
-	for queue.Len() > 0 {
-		fmt.Println("for1")
-		n := queue.Len()
-		fmt.Println(n)
+	q := list.New()
+	q.PushBack(root)
+
+	step := 0
+	for q.Len() > 0 {
+		n := q.Len()
+		// ここでさらにq.Len回ループすることで幅優先探索となる
 		for i := 0; i < n; i++ {
-			fmt.Println("for2")
-			e := queue.Front()
-			fmt.Println(e.Value)
-			queue.Remove(e)
-			node := e.Value.(*TreeNode)
-			if node.Left != nil {
-				queue.PushBack(node.Left)
+			e := q.Front()
+			q.Remove(e)
+			n, _ := e.Value.(*TreeNode)
+			if n.Left != nil {
+				q.PushBack(n.Left)
 			}
-			if node.Right != nil {
-				queue.PushBack(node.Right)
+			if n.Right != nil {
+				q.PushBack(n.Right)
 			}
-			fmt.Println(n)
 		}
-		level++
+
+		step++
 	}
-	return level
+
+	return step
 }
