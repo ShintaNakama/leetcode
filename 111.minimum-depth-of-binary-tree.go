@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 /**
  * <p>Given a binary tree, find its minimum depth.</p>
 
@@ -48,25 +46,13 @@ func minDepth(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	return min(minDepth(root.Left), minDepth(root.Right)) + 1
-}
 
-func min(x int, y int) int {
-	fmt.Println(x, y)
-	if x == 0 || y == 0 {
-		if x > y {
-			return x
-		} else {
-			return y
-		}
+	left := minDepth(root.Left)
+	right := minDepth(root.Right)
+
+	if left != 0 && left < right || right == 0 {
+		return left + 1
 	}
 
-	if x < y {
-		return x
-	}
-
-	//if x > y {
-	//	return x
-	//}
-	return y
+	return right + 1
 }
