@@ -43,25 +43,27 @@ package main
  * }
  */
 
-// https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/solutions/1684339/golang-solution-beat-100-cpu-memory/?orderBy=most_votes&languageTags=golang
 func sortedArrayToBST(nums []int) *TreeNode {
 	if len(nums) == 0 {
 		return nil
 	}
-	// 二分探索木なので2で分割した値がroot
+
+	// 今回の場合2で割った値がroot
 	i := len(nums) / 2
-	//fmt.Println(len(nums))
-	//fmt.Println(i)
-	//fmt.Println(nums[i])
-	root := &TreeNode{Val: nums[i]}
+
+	root := &TreeNode{
+		Val: nums[i],
+	}
+
+	if len(nums) == 1 {
+		return root
+	}
+
 	// rootの左側と右側で再帰処理を行う
-	// 引数のnumsはsort済みなので左側はroot側から
-	// 右側はnumsの最後から再帰処理を行う
-	if i != 0 {
-		root.Left = sortedArrayToBST(nums[:i])
-	}
-	if i != len(nums)-1 {
-		root.Right = sortedArrayToBST(nums[i+1:])
-	}
+	// 引数のnumsはsort済みなので左側はrootより手前の要素
+	// 右側はrootより後の要素が再帰処理の対象
+	root.Left = sortedArrayToBST(nums[:i])
+	root.Right = sortedArrayToBST(nums[i+1:])
+
 	return root
 }
