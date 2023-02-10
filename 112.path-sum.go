@@ -56,7 +56,6 @@ There is no root-to-leaf path with sum = 5.
  * }
  */
 
-// https://leetcode.com/problems/path-sum/solutions/525239/python-js-go-c-o-n-dfs-w-hint/?orderBy=most_votes&languageTags=golang
 /*
 DFSアルゴリズム(深さ優先探索)のフレームワークを考える
 
@@ -69,20 +68,19 @@ DFSアルゴリズム(深さ優先探索)のフレームワークを考える
 */
 
 func hasPathSum(root *TreeNode, targetSum int) bool {
-	// Base case
-	if nil == root {
+	// base case
+	if root == nil {
 		return false
 	}
 
-	if nil == root.Left && nil == root.Right {
-		// Base case
-		return root.Val == targetSum
-
-	} else {
-		// General cases
-		// ここでDFSで次のレベルに降りる
-		// つまりrootのLeftとRightを再帰的に探索していく
-		// この時targetSumを現在のrootの値との差分に更新している
-		return hasPathSum(root.Left, targetSum-root.Val) || hasPathSum(root.Right, targetSum-root.Val)
+	// targetSumを現在のrootの値との差分を求めて
+	// trueの条件(合計がtargetSumと同じでリーフノードの場合)に合致したらtrue
+	sub := targetSum - root.Val
+	if sub == 0 && root.Left == nil && root.Right == nil {
+		return true
 	}
+
+	// ここでDFSで次のレベルに降りる
+	// つまりrootのLeftとRightを再帰的に探索していく
+	return hasPathSum(root.Left, sub) || hasPathSum(root.Right, sub)
 }

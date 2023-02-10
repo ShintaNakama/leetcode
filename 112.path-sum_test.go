@@ -56,10 +56,28 @@ func Test_hasPathSum(t *testing.T) {
 			},
 			want: true,
 		},
+		{
+			name: "no4",
+			args: args{
+				root: &TreeNode{
+					Val: 1,
+					Left: &TreeNode{
+						Val:   2,
+						Left:  nil,
+						Right: nil,
+					},
+					Right: nil,
+				},
+				targetSum: 1,
+			},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
-		if got := hasPathSum(tt.args.root, tt.args.targetSum); got != tt.want {
-			t.Errorf("%q. hasPathSum() = %v, want %v", tt.name, got, tt.want)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			if got := hasPathSum(tt.args.root, tt.args.targetSum); got != tt.want {
+				t.Errorf("%q. hasPathSum() = %v, want %v", tt.name, got, tt.want)
+			}
+		})
 	}
 }
