@@ -44,36 +44,30 @@ package main
 
 // https://leetcode.com/problems/longest-increasing-subsequence/solutions/1366486/golang-binary-search-time-o-nlogn-space-o-n/?orderBy=most_votes&languageTags=golang
 func lengthOfLIS(nums []int) int {
-	//binary search with tail array
-	tail := []int{}
-	idx := 0
+	tails := []int{}
+
 	for _, num := range nums {
-		// binarySearchで最小値からの部分配列を検索しつつ値をセットしていっている
-		idx = binarySearch(tail, num)
-		if idx == len(tail) {
-			tail = append(tail, num)
+		idx := binarySearchLengthOfLIS(tails, num)
+
+		if len(tails) == idx {
+			tails = append(tails, num)
 		} else {
-			tail[idx] = num
+			tails[idx] = num
 		}
-		//fmt.Println(idx)
-		//fmt.Println(tail)
 	}
-	return len(tail)
+
+	return len(tails)
 }
 
-func binarySearch(tail []int, target int) int {
-	n := len(tail)
-	left, right := 0, n
+func binarySearchLengthOfLIS(nums []int, target int) int {
+	left, right := 0, len(nums)
+
 	for left < right {
 		mid := left + (right-left)/2
-		// binarySearchの処理中で、中央の値がtargetの値より小さかったら
-		// 次の検索範囲を中央より右側(mid+1..len(tail))にするためにleftにmid+1を代入する
-		if tail[mid] < target {
-			left = mid + 1
-			// binarySearchの処理中で、中央の値がtargetの値より大きかったら
-			// 次の検索範囲を0..midにするためにrightにmidを代入する
-		} else if tail[mid] > target {
+		if nums[mid] > target {
 			right = mid
+		} else if nums[mid] < target {
+			left = mid + 1
 		} else {
 			return mid
 		}
