@@ -1,7 +1,5 @@
 package main
 
-import "math"
-
 /**
  * <p>Given an integer array <code>nums</code>, find the <span data-keyword="subarray-nonempty">subarray</span> with the largest sum, and return <em>its sum</em>.</p>
 
@@ -47,18 +45,28 @@ import "math"
 **/
 
 // https://leetcode.com/problems/maximum-subarray/solutions/2392041/brute-to-kadane/?orderBy=most_votes&languageTags=golang
+// この問題では部分配列がsumがmaxになる場合のmaxの値を求める
+// maxの値を保持し最大値を更新していけば良い
+// sumがマイナスになったら0を代入していい
 func maxSubArray(nums []int) int {
-	max := nums[0]
-	sum := 0
+	var (
+		sum int
+		max = nums[0]
+	)
 
-	for _, num := range nums {
-		sum += num
-
-		max = int(math.Max(float64(max), float64(sum)))
-
+	for _, n := range nums {
+		sum += n
+		if max < sum {
+			max = sum
+		}
 		if sum < 0 {
 			sum = 0
 		}
+
+		//fmt.Println("n", n)
+		//fmt.Println("sum", sum)
+		//fmt.Println("max", max)
+
 	}
 	return max
 }
