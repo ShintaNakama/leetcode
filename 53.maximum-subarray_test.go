@@ -32,6 +32,20 @@ func Test_maxSubArray(t *testing.T) {
 			},
 			want: 23,
 		},
+		{
+			name: "no4",
+			args: args{
+				nums: []int{-1},
+			},
+			want: -1,
+		},
+		{
+			name: "no5",
+			args: args{
+				nums: []int{1, 2},
+			},
+			want: 3,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
