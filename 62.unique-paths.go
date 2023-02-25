@@ -42,36 +42,32 @@ import "fmt"
 **/
 
 // https://leetcode.com/problems/unique-paths/solutions/474165/python-js-java-go-c-by-o-mn-dp-with-explanation/?orderBy=most_votes&languageTags=golang
+
+// dp[i][j]を、ロボットがgrid[i][j]にいるときに右下隅に到達するためのユニークな経路の数とします。
+// dp[0][0] = 1 とし、dp[i][0]とdp[0][j]をそれぞれ1と初期化します。これは、ロボットが一番左の列にいる場合、または一番上の行にいる場合に、それぞれ1通りの方法で右下に到達できることを示します。
+// dp[i][j] = dp[i-1][j] + dp[i][j-1]です。これは、ロボットが現在のセルに到達する前に、左のセルから来るか、上のセルから来るかを考慮した合計です。
+// 最終的な答えは、dp[m-1][n-1]に保存されています。
+
 func uniquePaths(m int, n int) int {
-
-	// Create 2D array with size m x n
-	// pathはsize m*n で2Dを再現している
-	// rowをpathをフラットにしたもの
 	path := make([][]int, m)
-	rows := make([]int, m*n)
-	for y := 0; y < m; y++ {
-		path[y] = rows[y*n : (y+1)*n]
+
+	for i := 0; i < m; i++ {
+		row := make([]int, n)
+		path[i] = row
 	}
-	fmt.Println(path)
-	fmt.Println(rows)
 
-	// ループの最後でpathの合計がpath[m-1][n-1]に代入されるようになっている
-	// まだ理解できていない
-	for y := 0; y < m; y++ {
-		for x := 0; x < n; x++ {
+	//fmt.Println(path)
 
-			//fmt.Println(path)
-			if (y == 0) || (x == 0) {
-				path[y][x] = 1
-			} else {
-				// just follow the DP recurrence formula
-				path[y][x] = path[y-1][x] + path[y][x-1]
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if i == 0 || j == 0 {
+				path[i][j] = 1
+				continue
 			}
-			fmt.Println(path)
 
+			path[i][j] = path[i-1][j] + path[i][j-1]
 		}
 	}
-
 	fmt.Println(path)
 
 	return path[m-1][n-1]
