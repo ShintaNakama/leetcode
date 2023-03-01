@@ -38,33 +38,41 @@ Total amount you can rob = 2 + 9 + 1 = 12.
 **/
 
 /**
-この問題は、「隣接する要素の選択を避けつつ、配列内の要素の最大合計を見つける」という一般的な問題であり、動的計画法（DP）を使用して解決できます。
+この問題は、「隣接する要素の選択を避けつつ、配列内の要素の最大合計を見つける」という一般的な問題であり、動的計画法（DP）を使用して解決
+ きます。
 
-まず、配列の先頭から順番に各要素を選択し、その要素を含む場合と含まない場合の最大値を保持する二つの変数、curr_includeとcurr_excludeを保持します。curr_includeは現在の要素を含む場合の最大値、curr_excludeは現在の要素を含まない場合の最大値です。次の要素に進むたびに、これらの変数を更新します。
+まず、配列の先頭から順番に各要素を選択し、その要素を含む場合と含まない場合の最大値を保持する二つの変数、curr_includeとcurr_excludeを保
+ します。curr_includeは現在の要素を含む場合の最大値、curr_excludeは現在の要素を含まない場合の最大値です。次の要素に進むたびに、これら
+ 変数を更新します。
 
-curr_includeは、前の要素を含まない場合の最大値(curr_exclude)に現在の要素の値を加えたものになります。curr_excludeは、前の要素を含む場合と含まない場合の最大値のうち、大きい方を選択します。
+curr_includeは、前の要素を含まない場合の最大値(curr_exclude)に現在の要素の値を加えたものになります。curr_excludeは、前の要素を含む場合
+ 含まない場合の最大値のうち、大きい方を選択します。
 
 これらの変数を配列の末尾まで更新することで、最終的な結果が得られます。最後に、curr_includeとcurr_excludeのうち、大きい方を返します。
 
-このアルゴリズムは、配列の各要素を一度だけ処理するため、時間計算量はO(n)です。また、curr_includeとcurr_excludeの二つの変数だけを使用するため、空間計算量はO(1)
+このアルゴリズムは、配列の各要素を一度だけ処理するため、時間計算量はO(n)です。また、curr_includeとcurr_excludeの二つの変数だけを使用す
+ ため、空間計算量はO(1)
 **/
 
 func rob(nums []int) int {
-	currInclude := 0
-	currExclude := 0
-	for _, num := range nums {
-		temp := currInclude
-		currInclude = currExclude + num
-		currExclude = max(temp, currExclude)
-		//fmt.Println(currInclude)
-		//fmt.Println(currExclude)
+	var (
+		currentIncludeSum int
+		currentExcludeSum int
+	)
+
+	for _, n := range nums {
+		tmp := currentIncludeSum
+		currentIncludeSum = currentExcludeSum + n
+		currentExcludeSum = max(tmp, currentExcludeSum)
 	}
-	return max(currInclude, currExclude)
+
+	return max(currentIncludeSum, currentExcludeSum)
 }
 
 func max(a, b int) int {
 	if a > b {
 		return a
 	}
+
 	return b
 }
