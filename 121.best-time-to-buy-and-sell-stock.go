@@ -39,40 +39,23 @@ Note that buying on day 2 and selling on day 1 is not allowed because you must b
 /**
  * [7,1,5,3,6,4]
 **/
-//// 自分の回答
-//func maxProfit(prices []int) int {
-//	min, sub := math.MinInt64, 0
-//	min = prices[0]
-//	for _, price := range prices[1:] {
-//		if price < min {
-//			min = price
-//		}
-//		s := price - min
-//		if s > sub {
-//			sub = s
-//		}
-//
-//	}
-//
-//	return sub
-//}
 
-// 自分の回答2
 func maxProfit(prices []int) int {
-	min, sub := math.MinInt64, 0
-	min = prices[0]
-	for _, price := range prices[1:] {
-		if price < min {
-			min = price
-		}
-		s := price - min
-		if s > sub {
-			sub = s
+	var (
+		min = math.MaxInt
+		sub int
+	)
+
+	for _, n := range prices {
+		if n < min {
+			min = n
 		}
 
+		tmpSub := n - min
+		if tmpSub > sub {
+			sub = tmpSub
+		}
 	}
 
 	return sub
 }
-
-// https://leetcode.com/problems/best-time-to-buy-and-sell-stock/solutions/802390/python-go-js-c-o-n-by-dp-w-visualization/?orderBy=most_votes&languageTags=golang
