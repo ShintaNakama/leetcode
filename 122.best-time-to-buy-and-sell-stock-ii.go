@@ -1,6 +1,8 @@
 package main
 
-import "math"
+import (
+	"math"
+)
 
 /**
  * <p>You are given an integer array <code>prices</code> where <code>prices[i]</code> is the price of a given stock on the <code>i<sup>th</sup></code> day.</p>
@@ -49,42 +51,27 @@ Total profit is 4.
 /**
  * [7,1,5,3,6,4]
 **/
-//func maxProfit2(prices []int) int {
-//	subs := make([]int, 0, len(prices))
-//	min := math.MinInt64
-//	min = prices[0]
-//	for _, price := range prices[1:] {
-//		if price < min {
-//			min = price
-//		}
-//		s := price - min
-//		if s > 0 {
-//			subs = append(subs, s)
-//			min = price
-//		}
-//	}
-//
-//	var res int
-//	for _, sub := range subs {
-//		res += sub
-//	}
-//
-//	return res
-//}
 
+// 即日売っても良いということは、利益が出れるなら即売っても問題ないと考えることができる。
+// 次の日の方が利益が高くなる可能性が高いように見える(prices[n]よりもprices[n+1] の方が高い場合)でも
+// prices[n]で売って、minがnになるとprices[n+1] - prices[n] の利益が出る
 func maxProfit2(prices []int) int {
-	min, sub := math.MinInt64, 0
-	min = prices[0]
-	for _, price := range prices[1:] {
-		if price < min {
-			min = price
+	var (
+		min = math.MaxInt
+		sum int
+	)
+
+	for _, n := range prices {
+		if n < min {
+			min = n
 		}
-		s := price - min
-		if s > 0 {
-			sub += s
-			min = price
+
+		tmp := n - min
+		if tmp > 0 {
+			sum += tmp
+			min = n
 		}
 	}
 
-	return sub
+	return sum
 }
