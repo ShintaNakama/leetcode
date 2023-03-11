@@ -48,29 +48,22 @@ Note that you are allowed to reuse a dictionary word.
 */
 
 func wordBreak(s string, wordDict []string) bool {
-	// 辞書をマップに変換しておく
-	wordMap := make(map[string]bool)
+	m := make(map[string]bool, len(wordDict))
+
 	for _, word := range wordDict {
-		wordMap[word] = true
+		m[word] = true
 	}
 
-	// dp[i]はsの0番目からi-1番目の部分文字列が辞書の単語で分割可能かどうかを表す真偽値
 	dp := make([]bool, len(s)+1)
-	dp[0] = true // 空文字列は常にTrue
+	dp[0] = true
 
-	for i := 1; i <= len(s); i++ {
+	for i := 1; i < len(s)+1; i++ {
 		for j := 0; j < i; j++ {
-			// dp[j]がTrueかつ、s[j:i]が辞書に含まれている場合、dp[i]をTrueにする
-			// dp[j]がTrueかどうかで判別する理由は、dp[j]=Trueだとこれまでの処理で分割可能だった単語の区切りとなるため。
-			// そのためdp[j]=Trudの場合、s[j:i]が辞書にあるかどうかで考えることができる
-			if dp[j] && wordMap[s[j:i]] {
+			if dp[j] && m[s[j:i]] {
 				dp[i] = true
-				break
 			}
 		}
 	}
-
-	//fmt.Println(dp)
 
 	return dp[len(s)]
 }
