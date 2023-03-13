@@ -43,28 +43,60 @@ package main
 5
 **/
 
-// https://leetcode.com/problems/search-insert-position/solutions/519363/python-js-go-c-o-log-n-sol-by-binary-search-with-hint/?orderBy=most_votes&languageTags=golang
+// 模範回答
+// https://leetcode.com/problems/search-insert-position/solutions/1787521/go-concise-100/?orderBy=most_votes&languageTags=golang
 func searchInsert(nums []int, target int) int {
-	left, right := 0, len(nums)-1
-
-	// Classical binary search
-	for left <= right {
-
-		mid := left + (right-left)/2
-
-		if nums[mid] > target {
-			right = mid - 1
-
-		} else if nums[mid] < target {
-			left = mid + 1
-
-		} else {
-			// Target exists in nums, so the index of repeated element is the insert position
-			return mid
+	l := 0
+	r := len(nums) - 1
+	// lがr以下になったらlが解答となる
+	for l <= r {
+		m := l + (r-l)/2
+		v := nums[m]
+		// 以下でl or rを更新している。つまりtargetが2分探索の左側か右側かで検索する範囲を更新している
+		switch {
+		case v < target:
+			l = m + 1
+		case v > target:
+			r = m - 1
+		default:
+			return m
 		}
-
 	}
-
-	// Target doesn't exist in nums, so the index of first largest element is the insert position
-	return left
+	return l
 }
+
+// 自分の回答
+//func searchInsert(nums []int, target int) int {
+//	for {
+//		if len(nums) <= 2 {
+//			if len(nums) == 2 {
+//				if nums[0] < target && nums[1] > target {
+//					return 1
+//				} else if nums[1] < target {
+//					return 2
+//				}
+//			}
+//			if nums[0] > target {
+//				return 0
+//			} else if nums[0] < target {
+//				return 1
+//			}
+//		}
+//		herf := len(nums) / 2
+//
+//		n := nums[herf]
+//
+//		if n == target {
+//			return herf
+//		}
+//
+//		if target >= n {
+//			right := searchInsert(nums[herf:], target)
+//			return right + herf
+//		} else {
+//			left := searchInsert(nums[0:herf], target)
+//			return left
+//		}
+//	}
+//}
+//
