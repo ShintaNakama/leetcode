@@ -46,23 +46,24 @@ package main
 // 模範回答
 // https://leetcode.com/problems/search-insert-position/solutions/1787521/go-concise-100/?orderBy=most_votes&languageTags=golang
 func searchInsert(nums []int, target int) int {
-	l := 0
-	r := len(nums) - 1
-	// lがr以下になったらlが解答となる
-	for l <= r {
-		m := l + (r-l)/2
-		v := nums[m]
-		// 以下でl or rを更新している。つまりtargetが2分探索の左側か右側かで検索する範囲を更新している
+	left := 0
+	right := len(nums) - 1
+
+	for left <= right {
+		herf := ((right - left) / 2) + left
+		//fmt.Println(herf)
+		v := nums[herf]
 		switch {
 		case v < target:
-			l = m + 1
+			left = herf + 1
 		case v > target:
-			r = m - 1
+			right = herf - 1
 		default:
-			return m
+			return herf
 		}
 	}
-	return l
+
+	return left
 }
 
 // 自分の回答
