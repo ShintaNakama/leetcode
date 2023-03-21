@@ -51,31 +51,40 @@ func search(nums []int, target int) int {
 
 	// pivotの値を特定する
 	// 最終的にleftの値がpivot(回転数)となる
-	left, right := 0, len(nums)-1
+	left := 0
+	right := len(nums) - 1
+
 	for left < right {
 		mid := left + (right-left)/2
 		// midが右端より大きい場合、最小値が右側にあると判断する
 		if nums[mid] > nums[right] {
 			left = mid + 1
 		} else {
+			// midが右端より小さい場合、最小値が左側にあると判断する(次の検索範囲はleft < mid)
 			right = mid
 		}
 	}
-	//fmt.Println(left)
 
 	// pivotを考慮してtargetを検索する
+	// leftとrightにpivotを加算しておくと通常の2分探索で処理できる
 	pivot := left
-	left, right = pivot, len(nums)-1+pivot
-	//fmt.Println(left, right)
+	//fmt.Println(pivot)
+
+	left = pivot
+	right = len(nums) - 1 + pivot
+
+	// targetの値を検索するのでleft<=right
 	for left <= right {
 		mid := left + (right-left)/2
+		// midをlen(nums)で剰余すると本来のmidのindexがわかる
 		realmid := mid % len(nums)
-		//fmt.Println(mid)
-		//fmt.Println(nums[realmid])
-		if nums[realmid] < target {
-			left = mid + 1
-		} else if nums[realmid] > target {
+		//fmt.Println(mid, realmid)
+		// あとは通常の2分探索
+		// ポイントは回転された後(引数のnums)の順は考えなくてよくて、昇順でsortされている時と同じ考えで良い
+		if nums[realmid] > target {
 			right = mid - 1
+		} else if nums[realmid] < target {
+			left = mid + 1
 		} else {
 			return realmid
 		}
