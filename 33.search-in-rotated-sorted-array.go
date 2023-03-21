@@ -38,42 +38,46 @@ package main
 **/
 
 /**
-二分探索を使用して、配列内の最小値（ピボット）を見つけます。ピボットは、配列の回転後に最小値が移動した位置です。最小値は元の配列の先頭要素であるため、回転後の配列はその最小値を中心にソートされています。
-ピボットを見つけたら、通常の二分探索を実行しますが、実際のインデックスをピボットを考慮したものに調整します。これにより、回転を無視して配列内の目的の値を見つけることができます。
+二分探索を使用して、配列内の最小値（ピボット）を見つけます。ピボットは、配列の回転後に最小値が移動した位置です。最小値は元の配列の先頭
+要素であるため、回転後の配列はその最小値を中心にソートされています。
+ピボットを見つけたら、通常の二分探索を実行しますが、実際のインデックスをピボットを考慮したものに調整します。これにより、回転を無視して
+配列内の目的の値を見つけることができます。
 **/
 
 func search(nums []int, target int) int {
 	if len(nums) == 0 {
-		return -1
+		return nums[0]
 	}
 
-	low, high := 0, len(nums)-1
-
-	for low < high {
-		mid := (low + high) / 2
-		if nums[mid] > nums[high] {
-			low = mid + 1
+	// pivotの値を特定する
+	// 最終的にleftの値がpivot(回転数)となる
+	left, right := 0, len(nums)-1
+	for left < right {
+		mid := left + (right-left)/2
+		// midが右端より大きい場合、最小値が右側にあると判断する
+		if nums[mid] > nums[right] {
+			left = mid + 1
 		} else {
-			high = mid
+			right = mid
 		}
 	}
+	//fmt.Println(left)
 
-	//fmt.Println("low", low)
-	//fmt.Println("high", high)
-
-	pivot := low
-	low, high = 0, len(nums)-1
-
-	for low <= high {
-		mid := (low + high) / 2
-		realMid := (mid + pivot) % len(nums)
-
-		if nums[realMid] == target {
-			return realMid
-		} else if nums[realMid] < target {
-			low = mid + 1
+	// pivotを考慮してtargetを検索する
+	pivot := left
+	left, right = pivot, len(nums)-1+pivot
+	//fmt.Println(left, right)
+	for left <= right {
+		mid := left + (right-left)/2
+		realmid := mid % len(nums)
+		//fmt.Println(mid)
+		//fmt.Println(nums[realmid])
+		if nums[realmid] < target {
+			left = mid + 1
+		} else if nums[realmid] > target {
+			right = mid - 1
 		} else {
-			high = mid - 1
+			return realmid
 		}
 	}
 
