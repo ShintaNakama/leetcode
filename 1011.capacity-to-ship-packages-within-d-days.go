@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /**
  * <p>A conveyor belt has packages that must be shipped from one port to another within <code>days</code> days.</p>
 
@@ -63,44 +65,57 @@ Note that the cargo must be shipped in the order given, so using a ship of capac
 /**
 二分探索を使用して、最小の船の重量容量を見つけます。探索範囲は、荷物の最大重量から荷物の総重量までです。
 与えられた容量で荷物をすべて出荷できるかどうかを判断する補助関数を作成します。
-補助関数を使用して、船の容量が十分かどうかをチェックします。もし十分であれば、探索範囲を狭めて、さらに小さい容量を試みます。そうでなければ、探索範囲を拡大して、より大きい容量を試みます。
+補助関数を使用して、船の容量が十分かどうかをチェックします。もし十分であれば、探索範囲を狭めて、さらに小さい容量を試みます。そうでなけ
+れば、探索範囲を拡大して、より大きい容量を試みます。
+
+荷物の最大重量:
+船には少なくとも最も重い荷物を積むことができるべきです。もし船の重量容量が荷物の最大重量よりも小さければ、最も重い荷物は出荷できません。このため、探索範囲の最小値は荷物の最大重量でなければなりません。
+
+荷物の総重量:
+荷物の総重量は、すべての荷物を1日で出荷する場合に必要な船の重量容量です。総重量が船の重量容量と等しい場合、すべての荷物を1回の出荷で運ぶことができます。
 **/
 
 func shipWithinDays(weights []int, days int) int {
 	// 与えられた要領で日数内に出荷できるかを判定する関数
-	canShip := func(weights []int, capacity int, days int) bool {
-		currentDayWeight := 0
-		daysUsed := 1
+	isShip := func(weights []int, capacity, days int) bool {
+		currentWeight := 0
+		currentDay := 1
 
-		for _, weight := range weights {
+		for _, w := range weights {
 			// capacityを超過したら次の日
-			if currentDayWeight+weight > capacity {
-				currentDayWeight = 0
-				daysUsed++
+			if currentWeight+w > capacity {
+				currentWeight = 0
+				currentDay += 1
 			}
+			currentWeight += w
+		}
 
-			currentDayWeight += weight
-
-			// 出荷に使用した日数がdaysを超えたら期限の日数で出荷できないといこと
-			if daysUsed > days {
-				return false
-			}
+		// 出荷に使用した日数がdaysを超えたら期限の日数で出荷できないといこと
+		if currentDay > days {
+			return false
 		}
 
 		return true
 	}
 
+	// 探索範囲を荷物の最大重量から荷物の総重量までにする
+	// 探索範囲を荷物の最大重量から荷物の総重量までにした状態で算出した2分の値(capacity）が船の容量となる
+	// 1日の出荷で船の容量を超過しない重量まで積載し出荷、超過した分は翌日の出荷と考える
+	// 全ての荷物の出荷に必要な日数がdaysの値を超えた場合は、船の容量を大きくして探索するため最大重量(left）を更新
+	// 全ての荷物の出荷に必要な日数がdaysの値を超えなかった場合は船の容量を小さくして探索するため総重量(right）を更新
 	// 最大積載をleft, 積載の合計をright
-	left, right := maxWeights(weights), sumWeights(weights)
+	left := maxWeight(weights)
+	right := sumWeight(weights)
 
 	for left < right {
 		mid := left + (right-left)/2
-		//fmt.Println("left", left)
-		//fmt.Println("right", right)
-		//fmt.Println("mid", mid)
+		fmt.Println("left", left)
+		fmt.Println("right", right)
+		fmt.Println("mid", mid)
+		fmt.Println("---")
 
 		// 期限の日数内に出荷できれば検索範囲を狭めて、出荷できない場合は範囲を広げる
-		if canShip(weights, mid, days) {
+		if isShip(weights, mid, days) {
 			right = mid
 		} else {
 			left = mid + 1
@@ -110,20 +125,22 @@ func shipWithinDays(weights []int, days int) int {
 	return left
 }
 
-func maxWeights(weights []int) int {
-	maxWeight := 0
-	for _, weight := range weights {
-		if weight > maxWeight {
-			maxWeight = weight
+func maxWeight(weights []int) int {
+	var res int
+	for _, n := range weights {
+		if res < n {
+			res = n
 		}
 	}
-	return maxWeight
+
+	return res
 }
 
-func sumWeights(weights []int) int {
-	total := 0
-	for _, weight := range weights {
-		total += weight
+func sumWeight(weights []int) int {
+	var res int
+	for _, n := range weights {
+		res += n
 	}
-	return total
+
+	return res
 }
