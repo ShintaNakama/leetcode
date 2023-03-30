@@ -44,27 +44,48 @@ import "fmt"
 10
 */
 
-// https://leetcode.com/problems/powx-n/solutions/1702631/simple-golang-solution-100-faster-o-log-n-recursive/?orderBy=most_votes&languageTags=golang
+/*
+処理内容
+
+引数nが0の場合、1を返します。
+引数nが負の場合、xの逆数を計算し、nを正の整数に変換します。
+変数resultに1を代入します。
+引数nが0になるまで以下を繰り返します。
+nの最下位ビットが1の場合、resultにxを掛けます。
+xにxを掛け、nを1ビット右シフトします。
+resultを返します。
+*/
 
 func myPow(x float64, n int) float64 {
-	fmt.Println("nn:", n)
+	// 引数nが0の場合、1を返します。
 	if n == 0 {
-		return 1.0
-	} else if n < 0 {
-		//fmt.Println(myPow(x, -n))
-		return 1.0 / myPow(x, -n)
+		return 1
 	}
-
-	// n/2 を引数に再帰的に計算する
-	tmp := myPow(x, n/2)
-	//fmt.Println("n:", n)
-	//fmt.Println("tmp:", tmp)
-	//fmt.Println("n%2", n%2)
-
-	// no1だと最終的に32*32が戻り値になる(32=2の5乗)
-	if n%2 == 0 {
-		return tmp * tmp
-	} else {
-		return x * tmp * tmp
+	// 引数nが負の場合、xの逆数を計算し、nを正の整数に変換します。
+	if n < 0 {
+		x = 1 / x
+		n = -n
+		fmt.Println("n < 0")
+		fmt.Println("x", x)
+		fmt.Println("n", n)
 	}
+	// 変数resultに1を代入します。
+	result := 1.0
+	// 引数nが0になるまで以下を繰り返します。
+	for n > 0 {
+		// nの最下位ビットが1の場合、resultにxを掛けます。
+		// ビット演算子のANDビット演算
+		fmt.Println("n & 1", n&1)
+		if n&1 == 1 {
+			result *= x
+			fmt.Println("result", result)
+		}
+		// xにxを掛け、nを1ビット右シフトします。
+		x *= x
+		fmt.Println("x", x)
+		// 複合代入演算子(ライトシフトして代入)
+		n >>= 1
+		fmt.Println("n", n)
+	}
+	return result
 }

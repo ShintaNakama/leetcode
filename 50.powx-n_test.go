@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+)
 
 func Test_myPow(t *testing.T) {
 	type args struct {
@@ -36,11 +40,28 @@ func Test_myPow(t *testing.T) {
 			},
 			want: 0.25000,
 		},
+		{
+			name: "no4",
+			args: args{
+				x: 1.00000,
+				n: -2147483648,
+			},
+			want: 1.0,
+		},
+		{
+			name: "no5",
+			args: args{
+				x: 2.00000,
+				n: -2147483648,
+			},
+			want: 0.0,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := myPow(tt.args.x, tt.args.n); got != tt.want {
-				t.Errorf("%q. myPow() = %v, want %v", tt.name, got, tt.want)
+			got := myPow(tt.args.x, tt.args.n)
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("%q. myPow() = %v, want %v, diff %v", tt.name, got, tt.want, diff)
 			}
 		})
 	}
