@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /**
  * <p>Given the <code>head</code> of a sorted linked list, <em>delete all duplicates such that each element appears only once</em>. Return <em>the linked list <strong>sorted</strong> as well</em>.</p>
 
@@ -39,16 +41,35 @@ package main
  * }
  */
 
-// 自力解答
-func deleteDuplicates(head *ListNode) *ListNode {
-	if head == nil || head.Next == nil {
-		return head
-	}
+//// 自力解答
+//func deleteDuplicates(head *ListNode) *ListNode {
+//	if head == nil || head.Next == nil {
+//		return head
+//	}
+//
+//	if head.Val == head.Next.Val {
+//		head = deleteDuplicates(head.Next)
+//	} else {
+//		head.Next = deleteDuplicates(head.Next)
+//	}
+//
+//	return head
+//}
 
-	if head.Val == head.Next.Val {
-		head = deleteDuplicates(head.Next)
-	} else {
-		head.Next = deleteDuplicates(head.Next)
+// 以下のような解答もある
+// Valが重複した場合は重複削除のためにNextをNext.Nextで上書き(重複削除)する
+// Val重複していない場合はNextとNext.Nextが重複していないか確認するためにcurrentをNextで入れ替える
+// currentはheadのcopyなのでheadを返す
+func deleteDuplicates(head *ListNode) *ListNode {
+	current := head
+	for current != nil {
+		fmt.Println(current)
+		fmt.Println(head)
+		if current.Next != nil && current.Val == current.Next.Val {
+			current.Next = current.Next.Next
+			continue
+		}
+		current = current.Next
 	}
 
 	return head
