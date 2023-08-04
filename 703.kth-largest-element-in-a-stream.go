@@ -102,28 +102,16 @@ func Constructor(k int, nums []int) KthLargest {
 func (this *KthLargest) Add(val int) int {
 	if this.Nums.Len() == 0 {
 		heap.Push(this.Nums, val)
-		return (*this.Nums)[0]
+		return val
 	}
 
-	if this.Nums.Len() < this.K {
-		heap.Push(this.Nums, val)
-		return (*this.Nums)[0]
-	}
-
-	if val < (*this.Nums)[0] {
-		return (*this.Nums)[0]
-	}
-
-	heap.Push(this.Nums, val)
 	// heap.Popは heapの最小の要素を削除する
 	// つまりheap.Pushのあとにheap.Popを行うと最小の要素が変更される
-	_ = heap.Pop(this.Nums)
-	//fmt.Println(this.Nums)
+	heap.Push(this.Nums, val)
+
+	if this.Nums.Len() > this.K {
+		heap.Pop(this.Nums)
+	}
+
 	return (*this.Nums)[0]
 }
-
-/**
- * Your KthLargest object will be instantiated and called as such:
- * obj := Constructor(k, nums);
- * param_1 := obj.Add(val);
- */
